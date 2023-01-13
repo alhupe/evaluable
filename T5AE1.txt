@@ -1,0 +1,73 @@
+#!/bin/bash
+
+while true; do
+    echo "Selecciona una opción:"
+    echo "1. Ver número de inicios de sesión de un usuario."
+    echo "2. Ver días de conexión en un mes específico."
+    echo "3. Ver usuarios conectados en una fecha específica."
+    echo "4. Ver fecha de último inicio de sesión de un usuario."
+    echo "5. Salir del script."
+    read opcion
+    case $opcion in
+
+1)
+
+echo "Ingresa el nom d'usuari:"
+read usuario
+
+veces_log=$(grep -c ^"$usuario" usuarios.txt)
+
+if [ $veces_log -gt 0 ]; then
+  echo "L'usuari $usuario ha iniciat sesió $veces_log vegades."
+else
+  echo "No s'ha loguejat"
+fi;;
+
+2)
+
+echo "Ingresa el nom del mes:"
+read mes
+
+dias=$(grep $mes usuarios.txt | awk '{print $2}' | uniq)
+
+if [ -z "$dias" ]; then
+  echo "0"
+else
+  echo "Al mes de $mes s'han conectat els següents dies: "
+  echo $dias
+fi;;
+
+3)
+
+echo "Ingresa el día: "
+read dia
+echo "Ingresa el mes: "
+read mes
+
+grep "$dia $mes" usuarios.txt | awk '{print $1}';;
+
+4)
+
+echo "Ingresa el nom de l'usuari: "
+read usuario
+
+ultimo_log=$(grep -w $usuario usuarios.txt | awk '{print $2" "$3}' | sort -r | head -1)
+
+if [ -z "$ultimo_log" ]; then
+  echo "L'usuari no exist."
+else
+  echo "L'última data d'inici de sesió es: $ultimo_log"
+fi;;
+
+5)
+
+break;;
+
+*)
+
+echo "Opció no válida."
+
+esac
+
+done
+
